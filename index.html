@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlotSyncro - Teacher Availability</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">SlotSyncro</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#features">Features</a>
+            <a href="#preview">Availability</a>
+            <a href="login.php" style="color: var(--primary); font-weight: 600;">Log In</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Smart Scheduling for Modern Campus Life.</h1>
+            <p>The central hub for faculty availability and student success.</p>
+            <div class="cta-buttons">
+                <a href="register.php?role=student" class="btn btn-primary">Join as Student</a>
+                <a href="register.php?role=teacher" class="btn btn-secondary">Join as Teacher</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="stats-bar">
+        <div class="stat-item">
+            <i data-lucide="users"></i>
+            <span class="stat-value">50+</span>
+            <span class="stat-label">Active Faculty</span>
+        </div>
+        <div class="stat-item">
+            <i data-lucide="calendar-check-2"></i>
+            <span class="stat-value">1200+</span>
+            <span class="stat-label">Slots Booked</span>
+        </div>
+        <div class="stat-item">
+            <i data-lucide="activity"></i>
+            <span class="stat-value">Live</span>
+            <span class="stat-label">Real-time Updates</span>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="feature-card">
+            <div class="icon-wrapper"><i data-lucide="search"></i></div>
+            <h3>Browse Teachers</h3>
+            <p>Easily find faculty members and view their schedules.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon-wrapper"><i data-lucide="calendar"></i></div>
+            <h3>Pick a Slot</h3>
+            <p>Select a convenient time slot that fits your schedule.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon-wrapper"><i data-lucide="bell"></i></div>
+            <h3>Get Notified</h3>
+            <p>Receive instant updates and reminders for your bookings.</p>
+        </div>
+    </section>
+
+    <section id="preview" class="live-preview">
+        <h2>Live Availability</h2>
+        <p class="section-subtitle">Real-time glance at faculty status</p>
+        <div class="preview-grid">
+            <div class="teacher-card">
+                <div class="teacher-info">
+                    <div class="avatar">DR</div>
+                    <div>
+                        <h4>Dr. Robert Smith</h4>
+                        <span class="department">Computer Science</span>
+                    </div>
+                </div>
+                <div class="status available">
+                    <span class="dot"></span> Available Now
+                </div>
+                <div class="next-slot">Next slot: 2:00 PM Today</div>
+            </div>
+            <div class="teacher-card">
+                <div class="teacher-info">
+                    <div class="avatar">SJ</div>
+                    <div>
+                        <h4>Prof. Sarah Jenkins</h4>
+                        <span class="department">Mathematics</span>
+                    </div>
+                </div>
+                <div class="status busy">
+                    <span class="dot"></span> In Session
+                </div>
+                <div class="next-slot">Next slot: 10:00 AM Tomorrow</div>
+            </div>
+            <div class="teacher-card">
+                <div class="teacher-info">
+                    <div class="avatar">ML</div>
+                    <div>
+                        <h4>Dr. Michael Lee</h4>
+                        <span class="department">Physics</span>
+                    </div>
+                </div>
+                <div class="status away">
+                    <span class="dot"></span> Away
+                </div>
+                <div class="next-slot">Next slot: Mon, 9:00 AM</div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="dark-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">SlotSyncro</div>
+                <p>Connecting students and teachers effortlessly.</p>
+            </div>
+            <div class="quick-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SlotSyncro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
