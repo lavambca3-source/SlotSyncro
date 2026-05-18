@@ -11,24 +11,32 @@ $success = $error = '';
 
 // Handle Send Notification
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_notif'])) {
-    $target = $_POST['target']; // 'all', 'student_id'
+    $target = $_POST['target']; // 'all', 'all_teachers', or user id
     $message = trim($_POST['message']);
 
     if (!$message) {
         $error = "Message cannot be empty.";
     } else {
         if ($target === 'all') {
-            $students = $pdo->query("SELECT id FROM users WHERE role='student'")->fetchAll();
-            $stmt = $pdo->prepare("INSERT INTO notifications (student_id, message) VALUES (?, ?)");
-            foreach ($students as $s) {
-                $stmt->execute([$s['id'], $message]);
-            }
+            $users = $pdo->query("SELECT id FROM users WHERE role IN ('student','teacher')")->fetchAll();
+            $stmt = $pdo->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
+            foreach ($users as $u) { $stmt->execute([$u['id'], $message]); }
+            $success = "Notification sent to all users.";
+        } elseif ($target === 'all_students') {
+            $users = $pdo->query("SELECT id FROM users WHERE role='student'")->fetchAll();
+            $stmt = $pdo->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
+            foreach ($users as $u) { $stmt->execute([$u['id'], $message]); }
             $success = "Notification sent to all students.";
+        } elseif ($target === 'all_teachers') {
+            $users = $pdo->query("SELECT id FROM users WHERE role='teacher'")->fetchAll();
+            $stmt = $pdo->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
+            foreach ($users as $u) { $stmt->execute([$u['id'], $message]); }
+            $success = "Notification sent to all teachers.";
         } else {
-            $student_id = (int)$target;
-            $stmt = $pdo->prepare("INSERT INTO notifications (student_id, message) VALUES (?, ?)");
-            $stmt->execute([$student_id, $message]);
-            $success = "Notification sent to student.";
+            $uid = (int)$target;
+            $stmt = $pdo->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
+            $stmt->execute([$uid, $message]);
+            $success = "Notification sent.";
         }
     }
 }
@@ -46,8 +54,8 @@ if (isset($_GET['mark_read'])) {
     $success = "All notifications marked as read.";
 }
 
-// Fetch all students for dropdown
-$students_list = $pdo->query("SELECT id, name, email FROM users WHERE role='student' ORDER BY name")->fetchAll();
+// Fetch all students + teachers for dropdown
+$students_list = $pdo->query("SELECT id, name, email, role FROM users WHERE role IN ('student','teacher') ORDER BY role, name")->fetchAll();
 
 // Fetch notifications
 $search = trim($_GET['search'] ?? '');
@@ -65,9 +73,9 @@ if ($filter === 'read') { $where[] = "n.is_read = 1"; }
 
 $where_sql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 $stmt = $pdo->prepare("
-    SELECT n.*, u.name as student_name, u.email as student_email
+    SELECT n.*, u.name as student_name, u.email as student_email, u.role as user_role
     FROM notifications n
-    JOIN users u ON n.student_id = u.id
+    JOIN users u ON n.user_id = u.id
     $where_sql
     ORDER BY n.created_at DESC
 ");
@@ -76,7 +84,7 @@ $notifs = $stmt->fetchAll();
 
 $total_notifs = $pdo->query("SELECT COUNT(*) FROM notifications")->fetchColumn();
 $unread_notifs = $pdo->query("SELECT COUNT(*) FROM notifications WHERE is_read=0")->fetchColumn();
-$read_notifs = $pdo->query("SELECT COUNT(*) FROM notifications WHERE is_read=1")->fetchColumn();
+$read_notifs   = $pdo->query("SELECT COUNT(*) FROM notifications WHERE is_read=1")->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -227,10 +235,21 @@ $read_notifs = $pdo->query("SELECT COUNT(*) FROM notifications WHERE is_read=1")
                     <div class="form-group">
                         <label class="form-label">Send To</label>
                         <select name="target" class="form-control" required>
-                            <option value="all">📢 All Students</option>
-                            <?php foreach ($students_list as $s): ?>
+                            <option value="all">📢 Everyone (All Users)</option>
+                            <option value="all_students">🎓 All Students</option>
+                            <option value="all_teachers">🏫 All Teachers</option>
+                            <?php
+                            $current_role = '';
+                            foreach ($students_list as $s):
+                                if ($s['role'] !== $current_role) {
+                                    if ($current_role !== '') echo '</optgroup>';
+                                    $current_role = $s['role'];
+                                    echo '<optgroup label="' . ucfirst($s['role']) . 's">';
+                                }
+                            ?>
                             <option value="<?php echo $s['id']; ?>">👤 <?php echo htmlspecialchars($s['name']); ?></option>
                             <?php endforeach; ?>
+                            <?php if ($current_role !== '') echo '</optgroup>'; ?>
                         </select>
                     </div>
                     <div class="form-group">
