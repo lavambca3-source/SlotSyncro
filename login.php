@@ -3,14 +3,13 @@ session_start();
 require_once 'db.php';
 
 // Redirect if already logged in
-if (isset($_SESSION['user_id'])) {
-    if ($_SESSION['role'] === 'student') {
-        header("Location: student_dashboard.php");
-        exit();
-    } else {
-        header("Location: teacher_dashboard.php");
-        exit();
-    }
+if (isset($_SESSION['student_user_id']) && isset($_SESSION['student_role']) && $_SESSION['student_role'] === 'student') {
+    header("Location: student_dashboard.php");
+    exit();
+}
+if (isset($_SESSION['teacher_user_id']) && isset($_SESSION['teacher_role']) && $_SESSION['teacher_role'] === 'teacher') {
+    header("Location: teacher_dashboard.php");
+    exit();
 }
 
 $error = '';
@@ -27,13 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
         
         if ($user && password_verify($password, $user['password_hash'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['role'] = $user['role'];
-            
             if ($user['role'] === 'student') {
+                $_SESSION['student_user_id'] = $user['id'];
+                $_SESSION['student_name'] = $user['name'];
+                $_SESSION['student_role'] = $user['role'];
                 header("Location: student_dashboard.php");
             } else {
+                $_SESSION['teacher_user_id'] = $user['id'];
+                $_SESSION['teacher_name'] = $user['name'];
+                $_SESSION['teacher_role'] = $user['role'];
                 header("Location: teacher_dashboard.php");
             }
             exit();

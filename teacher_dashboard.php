@@ -3,12 +3,12 @@ session_start();
 require_once 'db.php';
 
 // Auth check
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teacher') {
+if (!isset($_SESSION['teacher_user_id']) || $_SESSION['teacher_role'] !== 'teacher') {
     header("Location: login.php");
     exit();
 }
 
-$teacher_id = $_SESSION['user_id'];
+$teacher_id = $_SESSION['teacher_user_id'];
 $message = '';
 
 // Fetch Department
@@ -163,7 +163,7 @@ $pdo->prepare("UPDATE notifications SET is_read = TRUE WHERE user_id = ?")->exec
     <nav class="navbar">
         <div class="logo">SlotSyncro Dashboard</div>
         <div class="nav-links">
-            <span>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?> <?php if($teacher_dept) echo '(' . htmlspecialchars($teacher_dept) . ')'; ?></span>
+            <span>Welcome, <?php echo htmlspecialchars($_SESSION['teacher_name']); ?> <?php if($teacher_dept) echo '(' . htmlspecialchars($teacher_dept) . ')'; ?></span>
             <span style="position:relative; cursor:default;">
                 🔔 Notifications
                 <?php if ($unread_count > 0): ?>
@@ -171,7 +171,7 @@ $pdo->prepare("UPDATE notifications SET is_read = TRUE WHERE user_id = ?")->exec
                 <span style="font-size:0.75rem; background:var(--danger); color:white; border-radius:1rem; padding:0.1rem 0.45rem; vertical-align:middle;"><?php echo $unread_count; ?></span>
                 <?php endif; ?>
             </span>
-            <a href="logout.php" style="color: var(--danger); font-weight: 600;">Log Out</a>
+            <a href="logout.php?role=teacher" style="color: var(--danger); font-weight: 600;">Log Out</a>
         </div>
     </nav>
 

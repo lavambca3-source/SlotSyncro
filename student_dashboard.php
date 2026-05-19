@@ -3,12 +3,12 @@ session_start();
 require_once 'db.php';
 
 // Auth check
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+if (!isset($_SESSION['student_user_id']) || $_SESSION['student_role'] !== 'student') {
     header("Location: login.php");
     exit();
 }
 
-$student_id = $_SESSION['user_id'];
+$student_id = $_SESSION['student_user_id'];
 $message = '';
 
 // Handle actions (Book, Notify, Cancel)
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$student_id, $slot_id]);
                 $message = "Slot booked successfully!";
                 // Notify the teacher
-                $student_name = $_SESSION['name'];
+                $student_name = $_SESSION['student_name'];
                 $notify_msg = "📅 {$student_name} booked your slot on {$slot_info['slot_date']} at {$slot_info['start_time']}.";
                 $pdo->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)")->execute([$slot_info['teacher_id'], $notify_msg]);
             } else {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($info) {
                 // Notify the teacher
-                $student_name = $_SESSION['name'];
+                $student_name = $_SESSION['student_name'];
                 $cancel_msg = "❌ {$student_name} cancelled their booking on {$info['slot_date']} at {$info['start_time']}.";
                 $pdo->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)")->execute([$info['teacher_id'], $cancel_msg]);
             }
@@ -190,7 +190,7 @@ $events_json = json_encode($calendar_events);
     <nav class="navbar">
         <div class="logo">SlotSyncro Dashboard</div>
         <div class="nav-links">
-            <span>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?></span>
+            <span>Welcome, <?php echo htmlspecialchars($_SESSION['student_name']); ?></span>
             <span style="position:relative; cursor:default;">
                 🔔 Notifications
                 <?php if ($unread_count > 0): ?>
@@ -198,7 +198,7 @@ $events_json = json_encode($calendar_events);
                 <span style="font-size:0.75rem; background:var(--danger); color:white; border-radius:1rem; padding:0.1rem 0.45rem; vertical-align:middle;"><?php echo $unread_count; ?></span>
                 <?php endif; ?>
             </span>
-            <a href="logout.php" style="color: var(--danger); font-weight: 600;">Log Out</a>
+            <a href="logout.php?role=student" style="color: var(--danger); font-weight: 600;">Log Out</a>
         </div>
     </nav>
 

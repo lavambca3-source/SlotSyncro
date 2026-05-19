@@ -3,8 +3,8 @@ session_start();
 require_once 'db.php';
 
 // Redirect if already logged in as admin
-if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
-    if ($_SESSION['role'] === 'admin') {
+if (isset($_SESSION['admin_user_id']) && isset($_SESSION['admin_role'])) {
+    if ($_SESSION['admin_role'] === 'admin') {
         header("Location: admin_dashboard.php");
         exit();
     }
@@ -24,9 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
         
         if ($user && password_verify($password, $user['password_hash'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['role'] = $user['role'];
+            $_SESSION['admin_user_id'] = $user['id'];
+            $_SESSION['admin_name'] = $user['name'];
+            $_SESSION['admin_role'] = $user['role'];
             
             header("Location: admin_dashboard.php");
             exit();

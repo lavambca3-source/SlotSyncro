@@ -3,12 +3,12 @@ session_start();
 require_once 'db.php';
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+if (!isset($_SESSION['student_user_id']) || $_SESSION['student_role'] !== 'student') {
     echo json_encode(['count' => 0, 'notifications' => []]);
     exit();
 }
 
-$student_id = $_SESSION['user_id'];
+$student_id = $_SESSION['student_user_id'];
 
 // Fetch only unread notifications since the last poll
 $stmt = $pdo->prepare("SELECT id, message, created_at FROM notifications WHERE user_id = ? AND is_read = FALSE ORDER BY created_at DESC LIMIT 10");

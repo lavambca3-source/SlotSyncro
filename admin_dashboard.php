@@ -3,12 +3,12 @@ session_start();
 require_once 'db.php';
 
 // Auth check
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['admin_user_id']) || $_SESSION['admin_role'] !== 'admin') {
     header("Location: admin_login.php");
     exit();
 }
 
-$admin_id = $_SESSION['user_id'];
+$admin_id = $_SESSION['admin_user_id'];
 
 // Get counts for dashboard summary
 $teachers_count = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'teacher'")->fetchColumn();
@@ -337,7 +337,7 @@ $recent_bookings = $pdo->query("
         </nav>
         
         <div class="logout-mt">
-            <a href="logout.php" class="nav-item logout">
+            <a href="logout.php?role=admin" class="nav-item logout">
                 <i data-lucide="log-out"></i>
                 Logout
             </a>
@@ -351,9 +351,9 @@ $recent_bookings = $pdo->query("
             <div class="navbar-brand">SlotSyncro Admin</div>
             <div class="admin-profile">
                 <div class="admin-avatar">
-                    <?php echo strtoupper(substr($_SESSION['name'], 0, 1)); ?>
+                    <?php echo strtoupper(substr($_SESSION['admin_name'], 0, 1)); ?>
                 </div>
-                <span><?php echo htmlspecialchars($_SESSION['name']); ?></span>
+                <span><?php echo htmlspecialchars($_SESSION['admin_name']); ?></span>
             </div>
         </header>
 

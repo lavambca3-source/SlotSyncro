@@ -2,7 +2,7 @@
 session_start();
 require_once 'db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['admin_user_id']) || $_SESSION['admin_role'] !== 'admin') {
     header("Location: admin_login.php");
     exit();
 }
@@ -148,7 +148,7 @@ $students = $stmt->fetchAll();
         <a href="admin_notifications.php" class="nav-item"><i data-lucide="bell"></i> Notifications</a>
     </nav>
     <div class="logout-mt">
-        <a href="logout.php" class="nav-item logout"><i data-lucide="log-out"></i> Logout</a>
+        <a href="logout.php?role=admin" class="nav-item logout"><i data-lucide="log-out"></i> Logout</a>
     </div>
 </aside>
 
@@ -156,8 +156,8 @@ $students = $stmt->fetchAll();
     <header class="top-navbar">
         <div class="navbar-brand">SlotSyncro Admin</div>
         <div class="admin-profile">
-            <div class="admin-avatar"><?php echo strtoupper(substr($_SESSION['name'], 0, 1)); ?></div>
-            <span><?php echo htmlspecialchars($_SESSION['name']); ?></span>
+            <div class="admin-avatar"><?php echo strtoupper(substr($_SESSION['admin_name'], 0, 1)); ?></div>
+            <span><?php echo htmlspecialchars($_SESSION['admin_name']); ?></span>
         </div>
     </header>
 
